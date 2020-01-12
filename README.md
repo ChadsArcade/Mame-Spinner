@@ -7,9 +7,14 @@ First efforts used a Leonardo as they are very easy to use as HIS devices. Whils
 
 The next attempt was to use the Arduino as a PS/2 mouse emulator, using the Arduino "PS2Dev" library. Whilst I could get this to work well under Windows (XP), DOS again did not play ball. The device was recognised, but would lock up. Debug suggests this may be a problem with the PS2Dev library, the "mouse" gets into a state where it thinks the host wants to send it a command, and it waits and waits for a command that never comes.
 
-Next approach was to use an Arduino UNO with the USB chip firmware flashed to a HID Mouse. DOS sees this as a mouse so this approach works. However, one of my ZVG cabs continually crashed when using the Spinner. The reason for this appears to be that several devices (including USB) share IRQs, and my motherboard does not have the options to reserve or allocate these :(
+Next approach was to use an Arduino UNO with the USB chip firmware flashed to a HID Mouse. Important - you need an Arduino with an Atmel 16u2 USB chip, many clones have a CH340G chip and these won't work!! DOS sees such a flashed device as a mouse so this approach works. However, one of my ZVG cabs continually crashed when using the Spinner. The reason for this appears to be that several devices (including USB) share IRQs, and my motherboard does not have the options to reserve or allocate these :(
 
-Other options would be: changing the motherboard (my other ZVG cab works fine), performing a "mouse hack", or moving from DOS to Linux ZVG Mame. I opted to swap the PCs around in my cable to the Multivector one has the motherboard which likes the USB Spinner.
+Other options would be:
+Change the motherboard (my other ZVG cab works fine)
+Perform a "mouse hack" and hack the rotary encoder quadrature signals onto a mouse PCB
+Moving from DOS to Linux ZVG Mame.
+
+I opted to swap the PCs around in my cabs so the Multivector one has the motherboard which likes the USB Spinner, the other one is in an Asteroids and doesn't have a Spinner friendly CP anyway.
 
 The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob was used which adds some weight and allows free spinning with a reasonable amount of decay time (approx £5 from eBay).
 
@@ -19,3 +24,4 @@ You will also need to tweak the MAME analog device sensitivity and find a suitab
 
 The encoder reading is done via an interrupt routine and has been found to be very reliable with no backspin under a Windowed OS. A second ISR is included in the code which samples on rising and falling edges, thus doubling the PPR count, should you wish to experiment. You could also sample the "B" pin and double the PPR count again.
 
+A metal plate with a few holes drilled in it will provide a suitable mount for a Takeman ZVG multivector CP (Tempest mounting holes).
