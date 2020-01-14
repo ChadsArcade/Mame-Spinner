@@ -3,19 +3,21 @@ Spinner controller for MAME
 
 This started as a project to get a spinner working in my DOS ZVG MAME cab.
 
-## First attempt: Arduino Leonardo / Pro Micro 
+#### First attempt: Arduino Leonardo / Pro Micro 
 
 First efforts used a Pro Micro as they are very easy to use as HID devices - simply include mouse.h and do a mouse.move(x,0,0). Whilst this works under a Windowed OS, DOS does not see the device as a mouse. I think this may be because the Arduino is seen as multiple USB devices.
 
-## Second attempt: Arduino emulating a PS/2 Mouse
+#### Second attempt: Arduino emulating a PS/2 Mouse
 
 The next attempt was to use the Arduino as a PS/2 mouse emulator, using the Arduino "PS2Dev" library. Whilst I could get this to work well under Windows (XP), DOS again did not play ball. The device was recognised, but would either go crazy (Spinning all over the place and pressing fire) or lock up. Debug suggests the lock up may be a problem with the PS2Dev library, the "mouse" gets into a state where it thinks the host wants to send it a command, and it waits and waits for a command that never comes.
 
-## Third attempt: Arduino UNO flashed as a USB Mouse
+#### Third attempt: Arduino UNO flashed as a USB Mouse
 
 Next approach was to use an Arduino UNO with the USB chip firmware flashed to a HID Mouse. Important - you need an Arduino with an Atmel 16u2 USB chip which can be put into DFU mode. Many clones have a CH340G chip and these won't work!! Some clones have the 16u2 chip but won't enter DFU mode, though it may be possible to flash them via the header.
 
 DOS sees such a flashed device as a mouse so this approach works. However, one of my ZVG cabs continually crashed when using the Spinner. The reason for this appears to be that several devices (including USB) share IRQs, and my motherboard does not have the options to reserve or allocate these :(
+
+#### Other things to try
 
 Other options would be (non exhaustive list):
 Try different DOS Mouse drivers and their various parameters
@@ -26,7 +28,11 @@ Moving from DOS to Linux ZVG Mame.
 
 I've opted for now to swap the PCs around in my cabs so the Multivector one has the motherboard which likes the USB Spinner, the other one is in an Asteroids Dlx cab and doesn't have a Spinner friendly CP anyway.
 
-The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob was used which adds some weight and allows free spinning with a reasonable amount of decay time (approx £5 from eBay).
+#### Parts used
+
+The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob was used which adds some weight and allows free spinning with a reasonable amount of decay time (approx £5 from eBay). See the included pictures for details.
+
+#### Summary
 
 The USB version works very well under Linux/Windows. However, DOS (at least the archaic version 0.104 I have in my ZVG cab) is waaaaay more sensitive to the pulses though and was very skittish. As such, a "divider" option was added to the USB version code. If you ground pin D8 you divide the Pulses/Revolution by 2, Gnd D9 for division by 4, and D10 for Division by 8.
 
