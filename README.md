@@ -9,6 +9,8 @@ The rotary encoder should be connected to 0v and +5v, and the A and B signals co
 
 First efforts used a Pro Micro as they are very easy to use as HID devices - simply include Mouse.h and do a mouse.move(x,0,0). Whilst this works under a Windowed OS, DOS did not see the device as a mouse. I think this may be because the Arduino presents itself as multiple USB devices.
 
+The code for this is included as ProMicro-Spinner.ino and is the easiest solution for those wanting a USB working under a Windows/Linux environment. The device will be seen as a mouse and will move the cursor along the X axis. The code is heavily commented and details the connections to be made to the spinner, and the option to scale up or down the sensitivity. 
+
 #### Second attempt: Arduino emulating a PS/2 Mouse
 
 The next attempt was to use the Arduino as a PS/2 mouse emulator, using the Arduino "PS2Dev" library. Whilst I could get this to work well under Windows (XP), DOS again did not play ball. The device was recognised, but would either go crazy (Spinning all over the place and pressing fire) or lock up. Debug suggests the lock up may be a problem with the PS2Dev library, the "mouse" gets into a state where it thinks the host wants to send it a command, and it waits and waits for a command that never comes.
@@ -17,11 +19,11 @@ You can monitor the chat from the host to mouse by setting debug to 1 in the cod
 
 #### Third attempt: Arduino UNO flashed as a USB Mouse
 
-Next approach was to use an Arduino UNO with the USB chip firmware flashed to a HID Mouse. Important - you need an Arduino with an Atmel 16u2 USB chip which can be put into DFU mode. Many clones have a CH340G chip and these won't work!! Some clones have the 16u2 chip but won't enter DFU mode, though it may be possible to flash them via the header.
+Next approach was to use an Arduino UNO with the USB chip firmware flashed to a HID Mouse. Important - you need an Arduino with an Atmel 16u2 USB chip which can be put into DFU mode. Many clones have a CH340G chip and these won't work!! Some clones have the 16u2 chip but won't enter DFU mode (I have an Elegoo branded UNO which does this), though it may be possible to flash them via the ICSP header - this has not yet been tested.
 
 You can get the mouse firmware (and serial USB firmware to turn it back into an Arduino) from: https://github.com/harlequin-tech/arduino-usb
 
-Alternate instructions on the DFU flashing process can be found here: http://anhnguyen.me/2014/01/turn-arduino-uno-r3-into-a-mouse/
+Detailed instructions on the DFU flashing process can be found here: http://anhnguyen.me/2014/01/turn-arduino-uno-r3-into-a-mouse/
 
 Tip: I put the 3 commands to flash either firmware into 2 shell scripts, "GoArduino.sh" and "GoMouse.sh". 
 
@@ -31,7 +33,7 @@ DOS sees such a flashed device as a mouse (you probably need USB legacy device s
 
 Other options would be (non exhaustive list):
 * Try different DOS Mouse drivers and their various parameters
-* Try HoodLoader2, though I thnik this may have the same issue as the Leonardo.
+* Try HoodLoader2, though I think this may have the same issue as the Leonardo.
 * Change the motherboard (my other ZVG cab works fine)
 * Perform a "mouse hack" and hack the rotary encoder quadrature signals onto a mouse PCB
 * Persevere with the PS/2 version and get it to work
