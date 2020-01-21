@@ -1,4 +1,4 @@
-# Mame-Spinner
+# Mame/Arcade Spinner
 Spinner controller for MAME
 
 This started as a project to get a spinner working in my DOS ZVG MAME cab.
@@ -40,6 +40,8 @@ Other options would be (non exhaustive list):
 * Move from DOS to Linux ZVG Mame.
 
 I've opted for now to swap the PCs around in my cabs so the Multivector one has the motherboard which likes the USB Spinner, the other one is in an Asteroids Dlx cab and doesn't have a Spinner friendly CP anyway.
+
+Update: I've successfully flashed the Elegoo UNO with HoodLoader2 so I'll experiment with this soon. "BootMouse" looks interesting.
 
 #### Parts used
 
