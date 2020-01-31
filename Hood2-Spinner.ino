@@ -36,10 +36,10 @@
 #define        Spin_A       1     // Hardware interrupt 1, digital pin PB1
 #define        Spin_B       2     // Hardware interrupt 2, digital pin PB2
 
-volatile float encoderPos = 0;    // stores our current value of encoder position.
+volatile int   encoderPos = 0;    // stores our current value of encoder position.
+int            delta_x    = 0;
 volatile byte  AB_Pins    = 0;    // stores the direct values we read from our interrupt pins
 
-float          increment  = 0.5;  // How much to add to the encoderPos per pulse, used to scale down resolution
 byte           scale      = 0;    // Scale factor used for calculating increment
 
 unsigned long  start_ms;          // Last time we sent mouse data
@@ -47,9 +47,11 @@ unsigned long  current_ms;        // Current time, used to check how long has el
 
 const int      pinLed     = LED_BUILTIN;
 
-////////////////////////////////////////////////////////////////////////////////
-// Setup pins and interrupts                                                  //
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+// Setup pins and interrupts                                                     //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
 void setup()
 {
    pinMode(pinLed, OUTPUT);
@@ -57,11 +59,13 @@ void setup()
 
    pinMode(Spin_A, INPUT_PULLUP); // set Spin_A as an input, pulled HIGH
    pinMode(Spin_B, INPUT_PULLUP); // set Spin_B as an input, pulled HIGH
-   attachPinChangeInterrupt(Spin_A, doEncoderRising, RISING);
+   attachPinChangeInterrupt(Spin_A, doEncoderRising, RISING);   // Use this ISR for x1 PPR
+   //attachPinChangeInterrupt(Spin_A, doEncoderChange_A, CHANGE); // Use this ISR for x2 PPR
+   //attachPinChangeInterrupt(Spin_B, doEncoderChange_B, CHANGE); // Use this AND the one above for x4 PPR
 
-   pinMode(4, INPUT_PULLUP);      // Input pin to set scale factor
-   pinMode(5, INPUT_PULLUP);      // Input pin to set scale factor 
-   pinMode(6, INPUT_PULLUP);      // Input pin to set scale factor
+   pinMode(4, INPUT_PULLUP);      // Input pin to set scale factor 1/2
+   pinMode(5, INPUT_PULLUP);      // Input pin to set scale factor 1/4
+   pinMode(6, INPUT_PULLUP);      // Input pin to set scale factor 1/8
 
    #if (debug)
       Serial.begin(57600);
@@ -72,55 +76,104 @@ void setup()
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Main Program Loop                                                          //
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+// Main Program Loop                                                             //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
 void loop()
 {
-   current_ms=millis();    // Record the current time so we an determine how long since we last sent mouse data
-   // If 25ms have elapsed since we last sent mouse data, send updated data
-   if ((current_ms - start_ms) >= 25)
+   current_ms=millis();                 // Record the current time so we an determine how long since we last sent mouse data
+   if ((current_ms - start_ms) >= 10)   // Send position every 10ms. Decrease this for highrt PPRs or if you get backspin
    {
       scale = (~PINB & 0b01110000) >> 3;
-      if (scale == 0) scale=1;
-      increment=(1.0/scale);
+      if (scale == 0) scale=1;          // scale = 1, 2, 4 or 8, just ground 1 pin but it should handle multiples
+      noInterrupts();                   // Stop encoderPos updating whilst we snapshot the value
+      delta_x=encoderPos;
+      encoderPos=encoderPos%scale;      // comment this in debug mode if you want to count the PPR
+      interrupts();
       #if (debug)
          Serial.print("Pos: \t");
-         Serial.print((int)encoderPos);
-         Serial.print("\tScale: \t");
-         Serial.println(scale);
+         Serial.print(delta_x);
+         Serial.print("\tDiv: \t");
+         Serial.print(delta_x/scale);
+         Serial.print("\tRem: \t");
+         Serial.println(delta_x%scale);
+      #else
+        BootMouse.move(delta_x/scale, 0);
       #endif
-
-      noInterrupts();
-      #if (!debug)
-        BootMouse.move((int)encoderPos, 0);
-        encoderPos=encoderPos-(int)encoderPos;  // Keep the fractional part
-      #endif
-      digitalWrite(pinLed, (int)encoderPos%2);
       start_ms=current_ms;
-      interrupts();
    }
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Interrupt routine for Spin_A - samples on RISING only         //
-// This will read x1 PPR resolution                              //
-///////////////////////////////////////////////////////////////////
-//void doEncoderRising()
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+// Interrupt routine for Spin_A - samples on RISING edge of input A only         //
+// This will read x1 PPR resolution                                              //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
 void doEncoderRising(void)
 {
-   noInterrupts();                //stop interrupts happening before we read pin values
-   digitalWrite(pinLed, LOW);
-   AB_Pins = PINB & 0b00000110;   // mask off the 2 pins of interest
-   if (AB_Pins == 0b00000110)     // Check if Spin_A == Spin_B
+   noInterrupts();                // Stop interrupts happening before we read pin values
+   //digitalWrite(pinLed, LOW);   // Visual feedback
+   AB_Pins = PINB & 0b00000110;   // Mask off the 2 pins of interest
+   if ((AB_Pins == 0b00000110))   // Check if Spin_A == Spin_B
    {
-      encoderPos+=increment;
+      encoderPos++;
    }
    else
    {
-      encoderPos-=increment;
+      encoderPos--;
    }
-   digitalWrite(pinLed, HIGH);
-   interrupts();                  //restart interrupts
+   //digitalWrite(pinLed, HIGH);  // Visual fedback
+   interrupts();                  // Restart interrupts
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+// Interrupt routine for Spin_A - samples on RISING and FALLING edges of input A //
+// This will read x2 PPR resolution                                              //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
+void doEncoderChange_A(void)
+{
+   noInterrupts();                // Stop interrupts before we read pin values
+   //digitalWrite(pinLed, LOW);   // Visual feedback
+   AB_Pins = PINB & 0b00000110;   // Mask off the 2 pins of interest
+   if ((AB_Pins == 0b00000110) || (!AB_Pins))   // Check if Spin_A == Spin_B
+   {
+      encoderPos++;
+   }
+   else
+   {
+      encoderPos--;
+   }
+   //digitalWrite(pinLed, HIGH);  // Visual feedback
+   interrupts();                  // restart interrupts
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+// Interrupt routine for Spin_B - samples on RISING and FALLING edges of input B //
+// This will read x4 PPR resolution when used alongside the CHANGE ISR for SpinA //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
+void doEncoderChange_B(void)
+{
+   noInterrupts();                // Stop interrupts before we read pin values
+   //digitalWrite(pinLed, LOW);   // Visual feedback
+   AB_Pins = PINB & 0b00000110;   // Mask off the 2 pins of interest
+   if ((AB_Pins == 0b00000100) || (AB_Pins == 0b00000010))   // Check if Spin_A == Spin_B
+   {
+      encoderPos++;
+   }
+   else
+   {
+      encoderPos--;
+   }
+   //digitalWrite(pinLed, HIGH);  // Visual feedback
+   interrupts();                  // restart interrupts
 }
