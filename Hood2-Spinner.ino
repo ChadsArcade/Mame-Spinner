@@ -166,7 +166,7 @@ void doEncoderChange_B(void)
    noInterrupts();                // Stop interrupts before we read pin values
    //digitalWrite(pinLed, LOW);   // Visual feedback
    AB_Pins = PINB & 0b00000110;   // Mask off the 2 pins of interest
-   if ((AB_Pins == 0b00000100) || (AB_Pins == 0b00000010))   // Check if Spin_A == Spin_B
+   if ((AB_Pins == 0b00000100) || (AB_Pins == 0b00000010))   // Check if Spin_A != Spin_B
    {
       encoderPos++;
    }
