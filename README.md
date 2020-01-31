@@ -1,6 +1,9 @@
 # Mame/Arcade Spinner
 Spinner controller for MAME
 
+![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner3-small.jpg "Completed Spinner")
+
+
 This started as a project to get a spinner working in my DOS ZVG MAME cab.
 
 The rotary encoder should be connected to 0v and +5v, and the A and B signals connected to pins D2 and D3. This allows for the use of hardware interrupts.
@@ -47,11 +50,11 @@ Update: I've successfully flashed the Elegoo UNO with HoodLoader2 so I'll experi
 
 The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob was used which adds some weight and allows free spinning with a reasonable amount of decay time (approx £5 from eBay). See the included pictures for details.
 
-![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner1-small.jpg "Endoer, knob and mounting plate")
+![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner1-small.jpg "Encoder, knob and mounting plate")
 
 #### Summary
 
-The USB version works very well under Linux/Windows. However, DOS (at least the archaic version 0.104 I have in my ZVG cab) is waaaaay more sensitive to the pulses though and was very skittish. As such, a "divider" option was added to the USB version code. If you ground pin D8 you divide the Pulses/Revolution by 2, Gnd D9 for division by 4, and D10 for Division by 8.
+The USB version works very well under Linux/Windows. However, DOS MAME (at least the archaic version 0.104 I have in my ZVG cab) is waaaaay more sensitive to the pulses and was very skittish. As such, a "divider" option was added to the USB version code. If you ground pin D8 you divide the Pulses/Revolution by 2, Gnd D9 for division by 4, and D10 for Division by 8.
 
 You will also need to tweak the MAME analog device sensitivity and find a suitable value which avoids backspin and feels about the right speed. This page gives details on expected PPR values for various games: https://web.archive.org/web/20160421175734/http://wiki.arcadecontrols.com/wiki/Spinner_Turn_Count
 
@@ -60,3 +63,5 @@ The encoder reading is done via an interrupt routine and has been found to be ve
 #### Panel mounting
 
 A metal plate with a few holes drilled in it will provide a suitable mount for a Takeman ZVG multivector CP (= Tempest mounting holes). I made a template by cutting around a 1 pence piece on a piece of cardboard, that gave the exact size for the centre part of the encoder. Then poke a pen through the card where the mounting holes are to get the positions for the screws. Finally, tape the card to your metal sheet and centrepunch where the holes are. The centre hole needs to be a touch over 20mm diameter for the encoder to sit flush.
+
+![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner2-small.jpg "Encoder mounted on plate")
