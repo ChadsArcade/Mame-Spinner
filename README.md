@@ -30,11 +30,15 @@ Detailed instructions on the DFU flashing process can be found here: http://anhn
 
 Tip: I put the 3 commands to flash either firmware into 2 shell scripts, "GoArduino.sh" and "GoMouse.sh". 
 
-DOS sees such a flashed device as a mouse (you probably need USB legacy device support enabled in the BIOS) so this approach works. However, one of my ZVG cabs continually crashed when using the Spinner. The reason for this appears to be that several devices (including USB, sound and video) share IRQs, and my motherboard does not have the options to reserve or re-allocate them :(
+DOS sees such a flashed device as a mouse (you probably need USB legacy device support enabled in the BIOS) so this approach works. Sometimes DOS mis-detects this as a Y-axis Spinner rather than an X-axis Spinner. This means you have to reconfigure games to look for movement on the other axis. A workaround may be to have the spinner update both axes... but this is a bit of a hack.
+
+One of my ZVG cabs continually crashed when using this Spinner. The reason for this appears to be that several devices (including USB, sound and video) share the same IRQs, and my motherboard does not have the options to reserve or re-allocate them :(
 
 #### Fourth attempt: Arduino UNO flashed with HoodLoader2
 
 HoodLoader2 is the next step up from the method above which flashes the 16u2 as a mouse device. HoodLoader2 lets you configure the 16u2 as various USB HID devices (and more) whilst still retaining the ability to flash the Arduino itself. All the necessary code to turn the Arduino into a USB Spinner resides on the 16u2 chip itself, which leaves open the option of using the main CPU for other purposes.
+
+My cheap Elegoo UNO which won't enter DFU mode successfully flashed HoodLoader2 and so is being used for this experiment.
 
 Test results in the DOS ZVG Mame cab coming soon...
 
