@@ -1,5 +1,5 @@
 # Mame/Arcade Spinner
-Spinner controller for MAME
+Spinner controller for MAME/Emulators under various operating systems
 
 ![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner3-small.jpg "Completed Spinner")
 
@@ -10,9 +10,9 @@ The rotary encoder should be connected to 0v and +5v, and the A and B signals co
 
 #### First attempt: Arduino Leonardo / Pro Micro 
 
-First efforts used a Pro Micro as they are very easy to use as HID devices - simply include Mouse.h and do a mouse.move(x,0,0). Whilst this works under a Windowed OS, DOS did not see the device as a mouse. I think this may be because the Arduino presents itself as multiple USB devices.
+First efforts used a Pro Micro as they are very easy to use as HID devices - simply include Mouse.h and do a mouse.move(x,0,0). Whilst this works under a Windowed OS, DOS did not see the device as a mouse. I think this may be because the Arduino presents itself as multiple USB devices rather than as a simple mouse device.
 
-The code for this is included as ProMicro-Spinner.ino and is the easiest solution for those wanting a USB working under a Windows/Linux environment. The device will be seen as a mouse and will move the cursor along the X axis. The code is heavily commented and details the connections to be made to the spinner, and the option to scale up or down the sensitivity. 
+The code for this is included as ProMicro-Spinner.ino and is the easiest solution for those wanting a USB working under a Windows/Linux environment. The device will be seen as a mouse and will move the cursor along the X axis. The code is heavily commented and details the connections to be made to the spinner, and the options to scale up or down the sensitivity. 
 
 #### Second attempt: Arduino emulating a PS/2 Mouse
 
@@ -32,15 +32,21 @@ Tip: I put the 3 commands to flash either firmware into 2 shell scripts, "GoArdu
 
 DOS sees such a flashed device as a mouse (you probably need USB legacy device support enabled in the BIOS) so this approach works. However, one of my ZVG cabs continually crashed when using the Spinner. The reason for this appears to be that several devices (including USB, sound and video) share IRQs, and my motherboard does not have the options to reserve or re-allocate them :(
 
+#### Fourth attempt: Arduino UNO flashed with HoodLoader2
+
+HoodLoader2 is the next step up from the method above which flashes the 16u2 as a mouse device. HoodLoader2 lets you configure the 16u2 as various USB HID devices (and more) whilst still retaining the ability to flash the Arduino itself. All the necessary code to turn the Arduino into a USB Spinner resides on the 16u2 chip itself, which leaves open the option of using the main CPU for other purposes.
+
+Test results in the DOS ZVG Mame cab coming soon...
+
 #### Other things to try
 
 Other options would be (non exhaustive list):
 * Try different DOS Mouse drivers and their various parameters
-* Try HoodLoader2, though I think this may have the same issue as the Leonardo.
+* Try HoodLoader2, ~~though I think this may have the same issue as the Leonardo.~~ DOS sees it as a mouse :)
 * Change the motherboard (my other ZVG cab works fine)
 * Perform a "mouse hack" and hack the rotary encoder quadrature signals onto a mouse PCB
 * Persevere with the PS/2 version and get it to work
-* Move from DOS to Linux ZVG Mame.
+* ~~Move from DOS to Linux ZVG Mame.~~ discounted, see ZVG Menu pages.
 
 I've opted for now to swap the PCs around in my cabs so the Multivector one has the motherboard which likes the USB Spinner, the other one is in an Asteroids Dlx cab and doesn't have a Spinner friendly CP anyway.
 
