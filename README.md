@@ -47,6 +47,8 @@ Update: I've successfully flashed the Elegoo UNO with HoodLoader2 so I'll experi
 
 The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob was used which adds some weight and allows free spinning with a reasonable amount of decay time (approx £5 from eBay). See the included pictures for details.
 
+![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/pics/Spinner1-Small.jpg "Endoer, knob and mounting plate")
+
 #### Summary
 
 The USB version works very well under Linux/Windows. However, DOS (at least the archaic version 0.104 I have in my ZVG cab) is waaaaay more sensitive to the pulses though and was very skittish. As such, a "divider" option was added to the USB version code. If you ground pin D8 you divide the Pulses/Revolution by 2, Gnd D9 for division by 4, and D10 for Division by 8.
