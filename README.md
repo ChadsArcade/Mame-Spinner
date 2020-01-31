@@ -47,7 +47,7 @@ Update: I've successfully flashed the Elegoo UNO with HoodLoader2 so I'll experi
 
 The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob was used which adds some weight and allows free spinning with a reasonable amount of decay time (approx £5 from eBay). See the included pictures for details.
 
-![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/pics/Spinner1-Small.jpg "Endoer, knob and mounting plate")
+![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner1-small.jpg "Endoer, knob and mounting plate")
 
 #### Summary
 
