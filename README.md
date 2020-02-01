@@ -40,31 +40,44 @@ HoodLoader2 is the next step up from the method above which flashes the 16u2 as 
 
 My cheap Elegoo UNO which won't enter DFU mode successfully flashed HoodLoader2 and so is being used for this experiment.
 
-Test results in the DOS ZVG Mame cab coming soon...
+Test results in the DOS ZVG Mame cab were unfortunately not good. DOS detected the device as a PS2 mouse (which is good) but MAME didn't see it at all. Subsequent reboots had DOS not see the device after all, only after a cold boot. I'm not sure what's goin gon here.
 
 #### Other things to try
 
 Other options would be (non exhaustive list):
-* Try different DOS Mouse drivers and their various parameters
-* Try HoodLoader2, ~~though I think this may have the same issue as the Leonardo.~~ DOS sees it as a mouse :)
+* Try different DOS Mouse drivers and their various parameters - can lower sensitivity this way.
+* Try HoodLoader2, ~~though I think this may have the same issue as the Leonardo.~~ DOS detects it intermittently.
 * Change the motherboard (my other ZVG cab works fine)
 * Perform a "mouse hack" and hack the rotary encoder quadrature signals onto a mouse PCB
 * Persevere with the PS/2 version and get it to work
 * ~~Move from DOS to Linux ZVG Mame.~~ discounted, see ZVG Menu pages.
 
-I've opted for now to swap the PCs around in my cabs so the Multivector one has the motherboard which likes the USB Spinner, the other one is in an Asteroids Dlx cab and doesn't have a Spinner friendly CP anyway.
 
 Update: I've successfully flashed the Elegoo UNO with HoodLoader2 so I'll experiment with this soon. "BootMouse" looks interesting.
 
+#### Current Status
+
+I've opted for now to swap the PCs around in my cabs so the Multivector one has the motherboard which likes the USB Spinner, the other one is in an Asteroids Dlx cab and doesn't have a Spinner friendly CP anyway.
+
+Currently I'm running with the UNO DFU code with the divider set to 8 (this gives an effective 75PPR, which is close to the Spinners used in Tempest (72PPR) and the Sega games (64PPR)). I'm using a logitech mouse driver with the parameters: AOFF S01
+(Acceleration OFF, Sensitivity 01)
+
+These settings enable you to use an analogue sensitivity of near 100% within MAME. Actual values should be:
+`72 PPR Spinner - Tempest:    72/75 = 96%
+64 PPR Spinner - Sega/Midway 64/75 = 85%`
+Note that Zektor in particular seems to bias reading towards the CCW direction, in fact I found that if you are using a very low analogue sensitivity in MAME (to compensate for a high PPR Spinner) then CW turns are ignored altogether and you can only turn CCW. The same goes for using keys without a mouse even attached, so this looks like it's maybe a bug in the MAME driver, unless the original behaved like this?
+
 #### Parts used
 
-The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob was used which adds some weight and allows free spinning with a reasonable amount of decay time (approx £5 from eBay). See the included pictures for details.
+The rotary encoder used is a 600PPR photoelectric device from eBay, costing around £11 UKP. As there is no provision for a flywheel, a solid aluminium knob resembling that used in Tempest (approx £5 from eBay) was used which adds some weight and allows free spinning with a reasonable amount of decay time, though not quite as good as with a flywheel/more weight. See the included pictures for details.
 
 ![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner1-small.jpg "Encoder, knob and mounting plate")
 
 #### Summary
 
-The USB version works very well under Linux/Windows. However, DOS MAME (at least the archaic version 0.104 I have in my ZVG cab) is waaaaay more sensitive to the pulses and was very skittish. As such, a "divider" option was added to the USB version code. If you ground pin D8 you divide the Pulses/Revolution by 2, Gnd D9 for division by 4, and D10 for Division by 8.
+All versions work very well under Linux/Windows. However, DOS is more fussy and the DFU USB code seems to work best, though sometimes the device isn't detected correctly and needs to be hot plugged. DOS MAME (at least the archaic version 0.104 I have in my ZVG cab) is very sensitive to the pulse count and was very skittish. As such, a "divider" option was added to the  code. If you ground pin D8 you divide the Pulses/Revolution by 2, Gnd D9 for division by 4, and D10 for Division by 8. (See comments in the code for the pin assignments of the NicoHood version).
+
+Division by 8 simulates a 75PPR spinner when using a 600PPR encoder, this approximates the PPR count of the spinner used in Vector arcade games.
 
 You will also need to tweak the MAME analog device sensitivity and find a suitable value which avoids backspin and feels about the right speed. This page gives details on expected PPR values for various games: https://web.archive.org/web/20160421175734/http://wiki.arcadecontrols.com/wiki/Spinner_Turn_Count
 
