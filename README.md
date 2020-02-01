@@ -4,15 +4,14 @@ Spinner controller for MAME/Emulators under various operating systems
 ![alt text](https://raw.githubusercontent.com/ChadsArcade/Mame-Spinner/master/Spinner3-small.jpg "Completed Spinner")
 
 
-This started as a project to get a spinner working in my DOS ZVG MAME cab.
+This started as a project to get a spinner working in my DOS ZVG MAME cab. I wanted to build something other people could replicate exactly, rather than use a mouse hack with an unknown sensitivity/PPR count. A photoelectric rotary encoder is used along with an Arduino to simulate a 1-axis mouse (= Spinner control).
 
-The rotary encoder should be connected to 0v and +5v, and the A and B signals connected to pins D2 and D3. This allows for the use of hardware interrupts.
 
 #### First attempt: Arduino Leonardo / Pro Micro 
 
 First efforts used a Pro Micro as they are very easy to use as HID devices - simply include Mouse.h and do a mouse.move(x,0,0). Whilst this works under a Windowed OS, DOS did not see the device as a mouse. I think this may be because the Arduino presents itself as multiple USB devices rather than as a simple mouse device.
 
-The code for this is included as ProMicro-Spinner.ino and is the easiest solution for those wanting a USB working under a Windows/Linux environment. The device will be seen as a mouse and will move the cursor along the X axis. The code is heavily commented and details the connections to be made to the spinner, and the options to scale up or down the sensitivity. 
+The code for this is included as ProMicro-Spinner.ino and is the easiest solution for those wanting a USB spinner working under a Windows/Linux environment. The device will be seen as a mouse and will move the cursor along the X axis. The code is heavily commented and details the connections to be made to the spinner, and the options to scale up or down the sensitivity. 
 
 #### Second attempt: Arduino emulating a PS/2 Mouse
 
@@ -63,9 +62,12 @@ Currently I'm running with the UNO DFU code with the divider set to 8 (this give
 (Acceleration OFF, Sensitivity 01)
 
 These settings enable you to use an analogue sensitivity of near 100% within MAME. Actual values should be:
+
 `72 PPR Spinner - Tempest:    72/75 = 96%
+
 64 PPR Spinner - Sega/Midway 64/75 = 85%`
-Note that Zektor in particular seems to bias reading towards the CCW direction, in fact I found that if you are using a very low analogue sensitivity in MAME (to compensate for a high PPR Spinner) then CW turns are ignored altogether and you can only turn CCW. The same goes for using keys without a mouse even attached, so this looks like it's maybe a bug in the MAME driver, unless the original behaved like this?
+
+Note that Zektor in particular seems to bias reading towards the CCW direction, in fact I found that if you are using a very low analogue sensitivity in MAME (to compensate for a high PPR Spinner) then CW turns are ignored altogether and you can only turn CCW. The same goes when you are using keys without a mouse even attached, so this looks like it's maybe a bug in the MAME driver, unless the original behaved like this?
 
 #### Parts used
 
@@ -77,11 +79,11 @@ The rotary encoder used is a 600PPR photoelectric device from eBay, costing arou
 
 All versions work very well under Linux/Windows. However, DOS is more fussy and the DFU USB code seems to work best, though sometimes the device isn't detected correctly and needs to be hot plugged. DOS MAME (at least the archaic version 0.104 I have in my ZVG cab) is very sensitive to the pulse count and was very skittish. As such, a "divider" option was added to the  code. If you ground pin D8 you divide the Pulses/Revolution by 2, Gnd D9 for division by 4, and D10 for Division by 8. (See comments in the code for the pin assignments of the NicoHood version).
 
-Division by 8 simulates a 75PPR spinner when using a 600PPR encoder, this approximates the PPR count of the spinner used in Vector arcade games.
+Division by 8 simulates a 75PPR spinner when using a 600PPR encoder, this is in the same ball park as the spinners used in Vector arcade games (typically 72 or 64).
 
 You will also need to tweak the MAME analog device sensitivity and find a suitable value which avoids backspin and feels about the right speed. This page gives details on expected PPR values for various games: https://web.archive.org/web/20160421175734/http://wiki.arcadecontrols.com/wiki/Spinner_Turn_Count
 
-The encoder reading is done via an interrupt routine and has been found to be very reliable with no backspin under a Windowed OS. A second ISR is included in the code which samples on rising and falling edges, thus doubling the PPR count, should you wish to experiment. You could also sample the "B" pin and double the PPR count again.
+The encoder reading is done via an interrupt routine and has been found to be very reliable with no backspin under a Windowed OS. A second ISR is included in the code which samples on rising and falling edges, thus doubling the PPR count, should you wish to experiment. You could also sample the "B" pin and double the PPR count again. You may need to decrease the time delay in sending the mouse data if using higher PPR spinners/ISRs.
 
 #### Panel mounting
 
