@@ -63,9 +63,8 @@ Currently I'm running with the UNO DFU code with the divider set to 8 (this give
 
 These settings enable you to use an analogue sensitivity of near 100% within MAME. Actual values should be:
 
-`72 PPR Spinner - Tempest:    72/75 = 96%
-
-64 PPR Spinner - Sega/Midway 64/75 = 85%`
+    72 PPR Spinner - Tempest:    72/75 = 96%
+    64 PPR Spinner - Sega/Midway 64/75 = 85%
 
 Note that Zektor in particular seems to bias reading towards the CCW direction, in fact I found that if you are using a very low analogue sensitivity in MAME (to compensate for a high PPR Spinner) then CW turns are ignored altogether and you can only turn CCW. The same goes when you are using keys without a mouse even attached, so this looks like it's maybe a bug in the MAME driver, unless the original behaved like this?
 
