@@ -19,6 +19,37 @@ The next attempt was to use the Arduino as a PS/2 mouse emulator, using the Ardu
 
 You can monitor the chat from the host to mouse by setting debug to 1 in the code. This lets you see the handshake when the mouse driver loads, something which seems to re-occur when a spinner enabled game loads.
 
+Here's the chat that occurs under Win XP when the mouse is reset:
+
+``
+PS2 Mouse emulator Started...
+   Send -> : 0xAA : Self Test Passed
+   Send -> : 0x00 : I am a standard PS/2 Mouse
+-> Recv    : 0xFF : Mouse Reset
+   Send -> : 0xAA : Self Test Passed
+   Send -> : 0x00 : I am a standard PS/2 Mouse
+-> Recv    : 0xF2 : Get Device ID
+   Send -> : 0x00 : I am a standard PS/2 Mouse
+-> Recv    : 0xE8 : Set Resolution...
+-> Recv    : 0x00 : ...to "0"
+-> Recv    : 0xE6 : Set Scaling 1:1
+-> Recv    : 0xE6 : Set Scaling 1:1
+-> Recv    : 0xE6 : Set Scaling 1:1
+-> Recv    : 0xE9 : Send Status Request
+   Send -> : 0x00 : Status 1: (Flags)
+   Send -> : 0x00 : Status 2: (Resolution)
+   Send -> : 0x64 : Status 3: (Rate)
+-> Recv    : 0xE8 : Set Resolution...
+-> Recv    : 0x03 : ...to "3"
+-> Recv    : 0xF2 : Get Device ID
+   Send -> : 0x00 : I am a standard PS/2 Mouse
+-> Recv    : 0xF3 : Set Sample Rate...
+-> Recv    : 0x64 : ...to "100" (Report every 10ms)
+-> Recv    : 0xE8 : Set Resolution...
+-> Recv    : 0x03 : ...to "3"
+-> Recv    : 0xF4 : Enable Data Reporting - Mouse enabled
+``
+
 #### Third attempt: Arduino UNO flashed as a USB Mouse
 
 Next approach was to use an Arduino UNO with the USB chip firmware flashed to a HID Mouse. Important - you need an Arduino with an Atmel 16u2 USB chip which can be put into DFU mode. Many clones have a CH340G chip and these won't work!! Some clones have the 16u2 chip but won't enter DFU mode (I have an Elegoo branded UNO which does this), though it may be possible to flash them via the ICSP header - this has not yet been tested.
