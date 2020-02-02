@@ -21,7 +21,7 @@ You can monitor the chat from the host to mouse by setting debug to 1 in the cod
 
 Here's the chat that occurs under Win XP when the mouse is reset:
 
-``
+```
 PS2 Mouse emulator Started...
    Send -> : 0xAA : Self Test Passed
    Send -> : 0x00 : I am a standard PS/2 Mouse
@@ -48,7 +48,7 @@ PS2 Mouse emulator Started...
 -> Recv    : 0xE8 : Set Resolution...
 -> Recv    : 0x03 : ...to "3"
 -> Recv    : 0xF4 : Enable Data Reporting - Mouse enabled
-``
+```
 
 #### Third attempt: Arduino UNO flashed as a USB Mouse
 
