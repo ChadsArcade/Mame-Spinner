@@ -35,9 +35,9 @@
 #define        Spin_A       2  // Hardware interrupt 0, digital pin 2
 #define        Spin_B       3  // Hardware interrupt 1, digital pin 3
 
-volatile int   encoderPos = 0; // stores our current value of encoder position. Change to int or uin16_t instead of byte if you want to record a larger range than 0-255
+volatile int   encoderPos = 0; // Stores our current value of encoder position.
 int            delta_x    = 0; // Store the encoder position prior to sending the mouse data
-volatile byte  AB_Pins    = 0; // stores the direct values we read from our interrupt pins before checking to see if we have moved a whole detent
+volatile byte  AB_Pins    = 0; // Stores the direct values we read from our interrupt pins
 volatile int   scale      = 1; // Scale factor by which we divide the output of the Spinner.
 
 // The Arduino Pro Micro has D2 and D3 on bits 0 and 1 of PortD, you may need to change this for different models!
